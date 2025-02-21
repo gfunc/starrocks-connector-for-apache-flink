@@ -35,6 +35,7 @@ import org.apache.flink.table.types.logical.LogicalType;
 import org.apache.flink.table.types.logical.SmallIntType;
 import org.apache.flink.table.types.logical.TimestampType;
 import org.apache.flink.table.types.logical.TinyIntType;
+import org.apache.flink.table.types.logical.VarBinaryType;
 import org.apache.flink.table.types.logical.VarCharType;
 import org.apache.flink.table.types.logical.utils.LogicalTypeDefaultVisitor;
 import org.apache.flink.util.Preconditions;
@@ -137,6 +138,14 @@ public class TypeUtils {
             builder.setDataType(CHAR);
             builder.setColumnSize(charType.getLength());
             builder.setNullable(charType.isNullable());
+            return builder;
+        }
+
+        @Override
+        public StarRocksColumn.Builder visit(VarBinaryType varBinaryType) {
+            builder.setDataType(STRING);
+            builder.setColumnSize(STRING_SIZE);
+            builder.setNullable(varBinaryType.isNullable());
             return builder;
         }
 
