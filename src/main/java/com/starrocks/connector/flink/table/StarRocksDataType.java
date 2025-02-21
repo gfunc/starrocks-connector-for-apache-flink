@@ -34,6 +34,7 @@ public enum StarRocksDataType {
     FLOAT,
     BIGINT,
     VARCHAR,
+    VARBINARY,
     CHAR,
     STRING,
     JSON,

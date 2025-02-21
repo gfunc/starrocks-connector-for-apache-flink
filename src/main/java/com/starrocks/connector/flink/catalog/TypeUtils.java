@@ -55,6 +55,7 @@ public class TypeUtils {
     public static final String DECIMAL = "DECIMAL";
     public static final String CHAR = "CHAR";
     public static final String VARCHAR = "VARCHAR";
+    public static final String VARBINARY = "VARBINARY";
     public static final String STRING = "STRING";
     public static final String DATE = "DATE";
     public static final String DATETIME = "DATETIME";
@@ -100,6 +101,8 @@ public class TypeUtils {
             case VARCHAR:
                 Preconditions.checkNotNull(precision, "Precision for StarRocks VARCHAR can't be null.");
                 return wrapNull(DataTypes.VARCHAR(precision), isNull);
+            case VARBINARY:
+                return wrapNull(DataTypes.VARBINARY(precision == null ? STRING_SIZE : precision), isNull);
             case STRING:
                 return wrapNull(DataTypes.STRING(), isNull);
             case DATE:
@@ -143,8 +146,8 @@ public class TypeUtils {
 
         @Override
         public StarRocksColumn.Builder visit(VarBinaryType varBinaryType) {
-            builder.setDataType(STRING);
-            builder.setColumnSize(STRING_SIZE);
+            builder.setDataType(VARBINARY);
+            builder.setColumnSize(Math.min(varBinaryType.getLength(), MAX_VARCHAR_SIZE));
             builder.setNullable(varBinaryType.isNullable());
             return builder;
         }
