@@ -546,7 +546,7 @@ public class StarRocksCatalog implements Serializable {
                         .map(key -> "`" + key + "`")
                         .collect(Collectors.joining(", "));
         builder.append(String.format("PRIMARY KEY (%s)\n", tableKeys));
-
+        table.getComment().ifPresent(comment -> builder.append(String.format("COMMENT \"%s\"\n", comment)));
         Preconditions.checkArgument(
                 table.getDistributionKeys().isPresent(),
                 "Can't build create table sql because there is no distribution keys");

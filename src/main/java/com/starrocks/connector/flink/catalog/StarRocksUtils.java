@@ -41,6 +41,12 @@ public class StarRocksUtils {
             ObjectPath tablePath,
             Configuration tableBaseConfig,
             CatalogBaseTable flinkTable) {
+        Map<String, String> columnComments = new HashMap<>();
+        flinkTable.getUnresolvedSchema().getColumns().forEach(
+                c -> c.getComment().ifPresent(
+                        comment -> columnComments.put(c.getName(), comment)
+                )
+        );
         TableSchema flinkSchema = flinkTable.getSchema();
         if (!flinkSchema.getPrimaryKey().isPresent()) {
             throw new CatalogException(
@@ -74,6 +80,9 @@ public class StarRocksUtils {
                     new StarRocksColumn.Builder()
                             .setColumnName(field.getName())
                             .setOrdinalPosition(i);
+            if (columnComments.containsKey(field.getName())) {
+                columnBuilder.setColumnComment(columnComments.get(field.getName()));
+            }
             TypeUtils.toStarRocksType(columnBuilder, field.getType());
             starRocksColumns.add(columnBuilder.build());
         }
